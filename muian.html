@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f6f2e8">
+<title>無為庵(むいあん) — 老子と哲学者たちの相談室</title>
+<meta name="description" content="老子(『道徳経』)を主答者、荘子・エピクロス・ショーペンハウアー・ハイデガー・スピノザを副答者とする哲学相談室。悩みを書くと、古典の知恵に基づいて答えが返ってきます。">
+<meta name="apple-mobile-web-app-title" content="無為庵">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<!-- OGP -->
+<meta property="og:title" content="無為庵 — 老子と哲学者たちの相談室">
+<meta property="og:description" content="老子を主答者、荘子・エピクロス・ショーペンハウアー・ハイデガー・スピノザを副答者とする哲学相談室。悩みを書くと、古典の知恵に基づいて6人の哲学者が答えます。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='630'%3E%3Crect width='1200' height='630' fill='%23f6f2e8'/%3E%3Crect x='40' y='40' width='1120' height='550' fill='none' stroke='%23a63b26' stroke-width='3'/%3E%3Ctext x='600' y='300' font-family='serif' font-size='120' fill='%233d3028' text-anchor='middle'%3E無為庵%3C/text%3E%3Ctext x='600' y='380' font-family='serif' font-size='36' fill='%23a63b26' text-anchor='middle'%3E老子と哲学者たちの相談室%3C/text%3E%3C/svg%3E">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="無為庵 — 老子と哲学者たちの相談室">
+<meta name="twitter:description" content="悩みを書くと、老子と5人の西洋哲学者が古典の知恵で答えてくれる哲学相談室。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='16' fill='%23f6f2e8'/%3E%3Ctext x='50' y='68' font-family='serif' font-size='60' fill='%23a63b26' text-anchor='middle'%3E無%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#f6f2e8; --ink:#3d3028; --vermilion:#a63b26; --gold:#d4a574;
+    --paper2:#efe8d8; --line:#d9cfba;
+    --c-laozi:#d4a574; --c-soshi:#7a9b6f; --c-epicurus:#b8860b;
+    --c-schopenhauer:#663333; --c-heidegger:#4a4a4a; --c-spinoza:#a63b26;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Hiragino Mincho ProN","Yu Mincho",serif;
+    font-size:14.5px; line-height:1.75;
+    padding-bottom:env(safe-area-inset-bottom);
+    min-height:100vh;
+  }
+  header{
+    padding:22px 20px 14px; text-align:center;
+    border-bottom:1px solid var(--line);
+  }
+  header h1{
+    margin:0; font-size:28px; letter-spacing:.15em; font-weight:600; color:var(--vermilion);
+  }
+  header .sub{ margin-top:6px; font-size:12.5px; color:#7a6f5f; letter-spacing:.05em;}
+  nav{
+    display:flex; gap:0; border-bottom:1px solid var(--line);
+    position:sticky; top:0; background:var(--bg); z-index:10; overflow-x:auto;
+  }
+  nav button{
+    flex:1; min-width:80px; padding:12px 6px; border:none; background:none;
+    font-family:inherit; font-size:13px; color:#8a7f6d; cursor:pointer;
+    border-bottom:3px solid transparent; white-space:nowrap;
+  }
+  nav button.active{ color:var(--vermilion); border-bottom-color:var(--vermilion); font-weight:600;}
+  main{ max-width:900px; margin:0 auto; padding:18px 16px 60px;}
+  .pane{ display:none; }
+  .pane.on{ display:block; animation:fade .25s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  #chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
+  .chip{
+    padding:8px 13px; border:1px solid var(--line); border-radius:20px; background:var(--paper2);
+    font-family:inherit; font-size:12.5px; color:var(--ink); cursor:pointer; min-height:36px;
+  }
+  .chip:active{ background:var(--gold); }
+
+  #log{ min-height:120px; margin-bottom:14px; }
+  .empty-hint{ color:#9a8f7d; font-size:13px; padding:30px 10px; text-align:center; }
+
+  .msg{ margin-bottom:14px; }
+  .msg.user{ text-align:right; }
+  .msg.user .bubble{
+    display:inline-block; background:var(--vermilion); color:#fff;
+    padding:10px 15px; border-radius:14px 14px 2px 14px; max-width:85%; text-align:left;
+    font-size:14px;
+  }
+  .card{
+    border:1px solid var(--line); border-left:5px solid var(--card-color, var(--gold));
+    background:#fffdf8; border-radius:6px; padding:14px 16px; margin-bottom:10px;
+    animation:fade .35s ease;
+  }
+  .card .who{ font-weight:600; font-size:14px; margin-bottom:6px; color:var(--card-color, var(--ink)); }
+  .card .quote{ font-style:italic; font-size:14.5px; margin:6px 0; line-height:1.9; }
+  .card .yomi{ font-size:12.5px; color:#6b6152; margin:2px 0; }
+  .card .src{ font-size:11.5px; color:#9a8f7d; margin-bottom:6px; }
+  .card .modern{ font-size:12px; color:#7a6f5f; margin-bottom:10px; padding-left:8px; border-left:2px solid var(--line); }
+  .card .answer{ font-size:14.5px; }
+
+  #moreRow{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; margin-bottom:20px; }
+  .askmore{
+    padding:9px 14px; border-radius:18px; border:1px solid var(--btn-color,var(--line));
+    color:var(--btn-color,var(--ink)); background:#fff; font-family:inherit; font-size:12.5px;
+    cursor:pointer; min-height:40px;
+  }
+
+  .inputbar{
+    display:flex; gap:8px; position:sticky; bottom:0; background:var(--bg);
+    padding:10px 0 4px; border-top:1px solid var(--line);
+  }
+  .inputbar input{
+    flex:1; padding:12px 14px; border:1px solid var(--line); border-radius:22px;
+    font-family:inherit; font-size:16px; background:#fff; color:var(--ink);
+  }
+  .inputbar button{
+    padding:0 20px; border:none; border-radius:22px; background:var(--vermilion); color:#fff;
+    font-family:inherit; font-size:14px; cursor:pointer; min-height:44px;
+  }
+
+  /* Library */
+  .profile{
+    border:1px solid var(--line); border-top:4px solid var(--p-color,var(--gold));
+    background:#fffdf8; border-radius:6px; padding:16px; margin-bottom:14px;
+  }
+  .profile h3{ margin:0 0 2px; font-size:17px; color:var(--p-color); }
+  .profile .era{ font-size:11.5px; color:#9a8f7d; margin-bottom:10px; }
+  .profile dl{ margin:0; }
+  .profile dt{ font-size:12px; color:#8a7f6d; margin-top:8px; }
+  .profile dd{ margin:2px 0 0; font-size:13.5px; }
+
+  /* Glossary */
+  .term{
+    border-bottom:1px solid var(--line); padding:10px 2px; display:flex; gap:12px; align-items:baseline;
+  }
+  .term .t{ font-weight:600; min-width:110px; flex-shrink:0; }
+  .term .p{ font-size:11px; color:#fff; background:var(--t-color,#999); border-radius:10px; padding:2px 8px; flex-shrink:0; }
+  .term .d{ font-size:13px; color:#5a5044; }
+
+  /* Compare table */
+  .tablewrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table.compare{ border-collapse:collapse; width:100%; min-width:760px; font-size:12.5px; }
+  table.compare th, table.compare td{ border:1px solid var(--line); padding:9px 10px; vertical-align:top; text-align:left; }
+  table.compare th{ background:var(--paper2); font-weight:600; }
+  table.compare th.axis{ background:#e9e1cd; min-width:90px; }
+  table.compare td.axis{ background:#e9e1cd; font-weight:600; }
+
+  footer{ text-align:center; padding:24px 16px 40px; font-size:11.5px; color:#9a8f7d; border-top:1px solid var(--line); margin-top:20px; }
+  footer a{ color:#9a8f7d; }
+
+  @media (max-width:640px){
+    header h1{ font-size:24px; }
+    main{ padding:14px 12px 50px; }
+    nav button{ font-size:12px; padding:11px 4px; }
+    .msg.user .bubble{ max-width:92%; }
+    table.compare{ font-size:11.5px; }
+    input, select, textarea{ font-size:16px !important; } /* iOSの自動ズーム防止 */
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>無為庵</h1>
+  <div class="sub">老子と哲学者たちの相談室</div>
+</header>
+
+<nav>
+  <button data-pane="consult" class="active">相談する</button>
+  <button data-pane="library">哲学者たち</button>
+  <button data-pane="glossary">概念事典</button>
+  <button data-pane="compare">比較表</button>
+</nav>
+
+<main>
+  <div id="consult" class="pane on">
+    <div id="chips"></div>
+    <div id="log"><div class="empty-hint">悩みや問いを書くか、上のテーマから選んでください。</div></div>
+    <div id="moreRow"></div>
+    <div class="inputbar">
+      <input id="q" placeholder="悩みを書いてください" maxlength="200">
+      <button id="ask">問う</button>
+    </div>
+  </div>
+
+  <div id="library" class="pane"></div>
+  <div id="glossary" class="pane"></div>
+  <div id="compare" class="pane"></div>
+
+  <footer>
+    無為庵 — 『道徳経』ほか古典の引用は、思想の紹介を目的とした要約的訳解です。<br>
+    © 2026 無為庵(muian) — 個人制作の非営利プロジェクト
+  </footer>
+</main>
+
+<script>
+/* ============ データ ============ */
+const PHILOSOPHERS = {
+  laozi:        { name:"老子",           c:"var(--c-laozi)",        era:"伝・前6世紀ごろ、中国" },
+  soshi:        { name:"荘子",           c:"var(--c-soshi)",        era:"前4世紀ごろ、中国" },
+  epicurus:     { name:"エピクロス",      c:"var(--c-epicurus)",     era:"前341〜前270年、古代ギリシャ" },
+  schopenhauer: { name:"ショーペンハウアー", c:"var(--c-schopenhauer)", era:"1788〜1860年、ドイツ" },
+  heidegger:    { name:"ハイデガー",      c:"var(--c-heidegger)",    era:"1889〜1976年、ドイツ" },
+  spinoza:      { name:"スピノザ",        c:"var(--c-spinoza)",      era:"1632〜1677年、オランダ" },
+};
+const OTHERS = ["soshi","epicurus","schopenhauer","heidegger","spinoza"];
+
+const PROFILES = [
+  { id:"laozi", work:"『道徳経』(全81章)", thought:"無為自然・道・柔弱謙下・知足",
+    rel:"道家思想の始祖。作為を手放し、自然の流れに沿って生きることを説いた。" },
+  { id:"soshi", work:"『荘子』", thought:"斉物論・逍遥遊・無用の用・坐忘",
+    rel:"老子の道家思想を寓話と文学的表現で発展させた継承者。「老荘思想」として並び称される。" },
+  { id:"epicurus", work:"『主要教説』『メノイケウス宛の手紙』", thought:"快楽主義(静的快)・アタラクシア・原子論",
+    rel:"直接の交流はないが、無為自然と、自然で必要な欲求のみを満たす思想には響き合うものがある。" },
+  { id:"schopenhauer", work:"『意志と表象としての世界』", thought:"厭世主義・意志の哲学・芸術的観照",
+    rel:"東洋思想(仏教・ヒンドゥー教)に強く傾倒し、道家的な無為・解脱の思想とも通じる厭世観を持つ。" },
+  { id:"heidegger", work:"『存在と時間』", thought:"現存在・存在論的差異・放下(Gelassenheit)",
+    rel:"『道徳経』の翻訳を試みた経験があり、放下の概念は老子の無為と深く共鳴する。" },
+  { id:"spinoza", work:"『エチカ』", thought:"汎神論(神即自然)・コナトゥス・理性による自由",
+    rel:"直接の交流はないが、超越神を立てず自然そのものを根源とする点で、道の思想と構造的に類似する。" },
+];
+
+const TERMS = [
+  {t:"道(タオ)", p:"laozi", d:"万物の根源にして、言葉で描写しきれない実在。"},
+  {t:"無為自然", p:"laozi", d:"自然に逆らわず、作為を手放すこと。"},
+  {t:"知足", p:"laozi", d:"足ることを知る充足感。欲に振り回されない心の在り方。"},
+  {t:"虚静", p:"soshi", d:"心を空にして静かに保つこと。"},
+  {t:"坐忘", p:"soshi", d:"すべてを忘れて大いなる道と一体化する瞑想の境地。"},
+  {t:"逍遥", p:"soshi", d:"あらゆる制約を超えた、心のままの自由な遊行。"},
+  {t:"斉物論", p:"soshi", d:"すべての価値判断や是非を相対化する考え方。"},
+  {t:"化", p:"soshi", d:"万物が絶えず姿を変え続ける、生成消滅の流れ。"},
+  {t:"機心", p:"soshi", d:"機械や技術に頼ることで生まれる、策略的で純朴さを失った心。"},
+  {t:"アタラクシア", p:"epicurus", d:"魂の平静、心の乱れのない安らぎ。"},
+  {t:"快(ヘドネー)", p:"epicurus", d:"苦痛の不在という、静的で持続的な快。"},
+  {t:"意志", p:"schopenhauer", d:"世界の背後にある、盲目的で尽きることのない根源的な力。"},
+  {t:"禁欲", p:"schopenhauer", d:"意志を否定し、欲望の連鎖による苦しみから逃れること。"},
+  {t:"芸術的観照", p:"schopenhauer", d:"利害を離れてイデアを静観し、意志の渇きから一時的に解放されること。"},
+  {t:"存在論的差異", p:"heidegger", d:"「存在」そのものと個々の「存在者」との根本的な区別。"},
+  {t:"無", p:"heidegger", d:"存在そのものが退き隠れる、創造の源となる虚無。"},
+  {t:"放下(Gelassenheit)", p:"heidegger", d:"物事を支配しようとせず、あるがままに委ねる態度。"},
+  {t:"集立(Gestell)", p:"heidegger", d:"現代技術が万物を利用可能な資源として取り立てる構え。"},
+  {t:"神即自然", p:"spinoza", d:"神は超越的な存在ではなく、自然そのものであるという考え。"},
+  {t:"コナトゥス", p:"spinoza", d:"あらゆるものが自己の存在を維持しようと努める根源的な力。"},
+  {t:"第三種認識", p:"spinoza", d:"永遠の相の下で物事を捉える、直観による最高の知識。"},
+  {t:"知的愛", p:"spinoza", d:"神(自然)に対する、理性的で喜びを伴う愛。"},
+];
+
+const THEMES = [
+{ id:"desire", label:"欲・お金・物足りなさ",
+  kw:["欲","お金","金が","貧し","足りない","物足りな","満たされない","もっと欲しい","贅沢","給料"],
+  feat:["epicurus","schopenhauer"],
+  laozi:{ k:"禍莫大於不知足、咎莫大於欲得。故知足之足、常足矣。",
+    y:"禍は足るを知らざるより大なるは莫く、咎は得るを欲するより大なるは莫し。故に足るを知るの足るは、常に足る。",
+    src:"『道徳経』第46章",
+    m:"不幸の最大の原因は満足を知らないこと。過ちの最大の原因はもっと得ようとする欲。だから「足りている」と気づける心こそ、常に満たされている。",
+    a:"あなたが欲しいのは物ではなく、心の落ち着きではないでしょうか。器は満たそうとするほど、こぼれ落ちるものが増えます。今すでに手にしているものに目を向けてごらんなさい。足るを知る者は、何も持たずとも富んでいるのです。欲を否定するのではなく、欲に振り回されない静けさを持つこと。それが道に適う生き方です。" },
+  o:{
+    soshi:{ q:"無用の用 ―『荘子』人間世篇", a:"役に立たない大木は切られずに長生きします。「足りない」と焦るのは、誰かの物差しで自分を測っているからかもしれません。物差しを手放せば、そのままで十分なのです。" },
+    epicurus:{ q:"自然で必要な欲求だけを満たせ ―『主要教説』", a:"欲望には自然で必要なもの、自然だが不必要なもの、空虚なものの三種があります。お金への渇望の多くは空虚な欲望です。パンと水があれば足りると知れば、王者のような満足を得られます。" },
+    schopenhauer:{ q:"意志は満たされてもすぐ新たな欠乏を生む ―『意志と表象としての世界』", a:"欲望とは欠乏の感覚であり、一つ満たしても次の欠乏がすぐ生まれます。物を増やすより、芸術や静観によって意志の渇きから一時離れることです。" },
+    heidegger:{ q:"頽落(Verfallen) ―『存在と時間』", a:"世間の「もっと」という声に流され、本来の自分を見失っていませんか。物の獲得に気を取られる日常性から離れ、自分自身の存在に向き合う時間を持ちなさい。" },
+    spinoza:{ q:"受動感情としての欲望 ―『エチカ』", a:"外的な原因に振り回される欲望は受動です。渇望の背後にある感情の仕組みを理性で理解すれば、その力に支配されなくなります。理解は自由への道です。" },
+  }},
+{ id:"anxiety", label:"不安・心配・焦り",
+  kw:["不安","心配","焦り","焦って","怖い","恐れ","緊張","落ち着かない","そわそわ","パニック"],
+  feat:["epicurus","heidegger"],
+  laozi:{ k:"寵辱若驚、貴大患若身。",
+    y:"寵辱は驚くが若し、大患を貴ぶこと身の若し。",
+    src:"『道徳経』第13章",
+    m:"評価されても貶されても、人は同じように心を揺らす。大きな災いを恐れるのは、自分の身を大事にしすぎるからだ。",
+    a:"不安の正体は、失うことを恐れる「自分」への執着です。評価も批判も、あなたを驚かせ心を揺らします。しかし、その揺れ動く自分を少し手放してごらんなさい。世界に自分をぴったり合わせようとするのをやめれば、風に吹かれる葦のように、揺れながらも折れずにいられます。焦りは、まだ来ぬ未来を今この瞬間に持ち込もうとするところから生まれるのです。" },
+  o:{
+    soshi:{ q:"坐忘 ―『荘子』大宗師篇", a:"手足を忘れ、耳目を忘れ、身も心も忘れて大いなる道に通じる。それが坐忘です。不安で頭がいっぱいの時こそ、考えるのをやめて、ただ座ってごらんなさい。" },
+    epicurus:{ q:"死は我々にとって何ものでもない ―『メノイケウス宛の手紙』", a:"不安の多くは、まだ来ない未来、特に死への漠然とした恐れから来ます。死は経験されないゆえに恐れる対象にはなり得ません。今この瞬間の快に意識を向ければ、心は静まります。" },
+    schopenhauer:{ q:"生への意志こそ苦悩の根源 ―『意志と表象としての世界』", a:"焦りとは、盲目的な生への意志があなたを駆り立てている姿です。その意志の正体を見抜けば、振り回されることは減っていきます。" },
+    heidegger:{ q:"不安(Angst)は本来性への呼び声 ―『存在と時間』", a:"不安は何か特定の対象への恐れではなく、存在そのものに直面したときに生じます。それは悪いものではなく、世間の雑音から離れ、本来の自分自身に立ち返るための入り口なのです。" },
+    spinoza:{ q:"希望と恐怖は同じ感情の裏表 ―『エチカ』", a:"不確かな未来の観念から生まれる感情が恐れです。原因を明晰に理解するほど、心はその感情に支配されなくなります。" },
+  }},
+{ id:"death", label:"死・喪失・老い",
+  kw:["死","亡くな","老い","老後","喪失","失った","別れ","病気","余命","死ぬ"],
+  feat:["soshi","epicurus"],
+  laozi:{ k:"死而不亡者壽。",
+    y:"死して亡びざる者は寿し。",
+    src:"『道徳経』第33章",
+    m:"肉体が死んでも、その道が失われない者こそ、本当に長生きしたと言える。",
+    a:"死を恐れるのは、自分という形にしがみついているからです。しかし道から見れば、生も死も一つの流れの中の変化にすぎません。形は滅びても、あなたが誰かに与えたもの、遺した道理は失われずに続いていきます。老いを衰えとだけ見るのではなく、道に近づいていく静かな成熟と捉えてごらんなさい。" },
+  o:{
+    soshi:{ q:"鼓盆而歌 ―『荘子』至楽篇", a:"妻を亡くした荘子は盆を叩いて歌いました。友人が驚くと彼は言います、「生まれる前は気ですらなかった。今また気に戻るだけ、それは四季の巡りと同じだ」と。悲しみを否定はしませんが、死もまた自然な物化なのです。" },
+    epicurus:{ q:"死は我々にとって何ものでもない ―『メノイケウス宛の手紙』", a:"我々が存在する限り死は存在せず、死が来た時にはもう我々は存在しません。だから死は経験されることのないものです。恐れるべきは死そのものではなく、死への漠然とした想像なのです。" },
+    schopenhauer:{ q:"個体性の消滅は苦しみからの解放 ―『意志と表象としての世界』", a:"死とは、個体という仮の姿が消え、盲目的な生への意志の苦しみから解かれることです。恐れるべきものというより、むしろ救いに近いのです。" },
+    heidegger:{ q:"死への先駆(Vorlaufen zum Tode) ―『存在と時間』", a:"死は誰も代わってあげられない、あなただけのものです。それを直視することで初めて、残された生を本当に自分のものとして生きられるようになります。" },
+    spinoza:{ q:"永遠の相の下に ―『エチカ』", a:"賢者は死について思い煩うことが最も少なく、その知恵は生についての瞑想にあります。物事を永遠の相の下で捉えれば、個の消滅への恐れは小さくなっていきます。" },
+  }},
+{ id:"work", label:"仕事・努力・頑張りすぎ",
+  kw:["仕事","努力","頑張り","頑張って","疲れ","燃え尽き","働き","残業","忙しい","キャリア"],
+  feat:["soshi","schopenhauer"],
+  laozi:{ k:"為者敗之、執者失之。是以聖人無為故無敗、無執故無失。",
+    y:"為す者はこれを敗り、執る者はこれを失う。ここを以て聖人は無為なるが故に敗るる無く、執する無きが故に失う無し。",
+    src:"『道徳経』第64章",
+    m:"無理に何かを成そうとする者はかえって失敗し、しがみつく者はかえって失う。だから聖人は無理に為さないから失敗せず、しがみつかないから失わない。",
+    a:"頑張りすぎるとは、結果を握りしめようとする力みです。川の流れに逆らって漕ぎ続ければ、いずれ力尽きてしまいます。無為とは怠けることではなく、物事の自然な流れに逆らわず、力を最も効率よく使うことです。力を抜くところを知る者こそ、長く働き続けられるのです。" },
+  o:{
+    soshi:{ q:"庖丁解牛 ―『荘子』養生主篇", a:"名料理人・庖丁の刃は、骨と骨の隙間を自然に沿って動くので何年経っても刃こぼれしません。力任せに切る者はすぐ刃を傷めます。仕事も同じ、物事の理に沿って動けば疲れは少ないのです。" },
+    epicurus:{ q:"隠れて生きよ(λάθε βιώσας)", a:"名声や出世のための労苦は、自然で必要な欲求を超えた空虚な欲望であることが多いのです。友と穏やかに過ごす簡素な生活にこそ、真の快が宿ります。" },
+    schopenhauer:{ q:"意志は満たされても新たな欠乏を生む ―『意志と表象としての世界』", a:"働いても働いても満たされないのは、達成が新たな欲望を生むだけだからです。仕事の合間に、利害を離れた芸術的観照の時間を持つことが、意志の渇きから一時逃れる術になります。" },
+    heidegger:{ q:"世人(das Man)への頽落 ―『存在と時間』", a:"「みんなが頑張っているから」という世間の声に流され、本来の自分の可能性を見失っていませんか。自分自身の死という限界を見つめ直すことで、何が本当に大切かが見えてきます。" },
+    spinoza:{ q:"コナトゥス ―『エチカ』", a:"すべてのものは自己の存在を維持しようとする力(コナトゥス)を持ちます。それに反する無理な労働は、あなたの活動能力を減らす受動感情を生みます。喜びを増す仕事を選びなさい。" },
+  }},
+{ id:"relationships", label:"人間関係・怒り・許せなさ",
+  kw:["人間関係","怒り","許せない","腹立","イライラ","嫌い","喧嘩","対立","職場の人","家族"],
+  feat:["spinoza","soshi"],
+  laozi:{ k:"上善若水。水善利萬物而不爭、處眾人之所惡、故幾於道。",
+    y:"上善は水の若し。水は善く万物を利して争わず、衆人の悪む所に処る。故に道に幾し。",
+    src:"『道徳経』第8章",
+    m:"最高の善とは水のようなものだ。水はあらゆるものに恵みを与えながら争わない。誰もが嫌う低い場所に留まる。だから道に近い。",
+    a:"怒りや許せなさは、相手と自分を比べ、争おうとするところから生まれます。水は岩とぶつかっても砕けようとせず、ただ形を変えて低きに流れていきます。相手を打ち負かそうとするのをやめ、水のように柔らかく在ることで、かえって多くの人に慕われるようになるのです。争わない者に、誰も本当に敵対することはできません。" },
+  o:{
+    soshi:{ q:"虚舟の喩え ―『荘子』山木篇", a:"空舟が自分の船にぶつかっても人は怒りません、しかし誰かが操っていたと分かれば怒鳴ります。相手の中に「敵意」を見出すのは、あなた自身の心が作り出した虚舟かもしれません。" },
+    epicurus:{ q:"友情は最高の善の一つ ―『主要教説』", a:"エピクロスの園では友情こそ人生の安らぎの柱でした。すべての人間関係に完璧を求めず、心から信頼できる少数の友を大切にすることが、平静への道です。" },
+    schopenhauer:{ q:"ヤマアラシのジレンマ ―『余録と補遺』", a:"ヤマアラシは寒さで身を寄せ合うが近づきすぎると互いの棘で傷つけ合い、離れると寒さに震える。人間関係も適切な距離を見出す試行錯誤の繰り返しなのです。" },
+    heidegger:{ q:"共同存在(Mitsein) ―『存在と時間』", a:"我々はもともと他者と共にある存在です。相手を自分の期待という枠に押し込めようとするのをやめ、その人がその人として在ることを認める配慮が関係を変えます。" },
+    spinoza:{ q:"感情は受動から能動へ ―『エチカ』", a:"怒りは、相手の行動を自分を害するものと捉える受動感情です。しかしその感情がなぜ生まれたか原因を理性で理解すればするほど、感情はあなたを支配する力を失っていきます。許すとは忘れることでなく、理解することです。" },
+  }},
+{ id:"failure", label:"失敗・挫折・後悔",
+  kw:["失敗","挫折","後悔","ミス","間違え","やらかし","うまくいかない","失敗した"],
+  feat:["epicurus","spinoza"],
+  laozi:{ k:"民之從事、常於幾成而敗之。慎終如始、則無敗事。",
+    y:"民の事に従うや、常に幾んど成らんとして之を敗る。終わりを慎むこと始めの如くすれば、則ち敗事無し。",
+    src:"『道徳経』第64章",
+    m:"人はたいてい、もう少しで成し遂げるというところで失敗する。始めと同じ慎重さを終わりまで保てば、失敗することはない。",
+    a:"失敗は最後の一歩、気の緩みから生まれることが多いのです。しかしそれを責める必要はありません。大切なのは、その失敗を材料にして、次にどう始めと同じ心構えで臨むかということ。後悔は過去に留まり続ける心の動きですが、道は絶えず流れ続けています。あなたも流れの中で、次の一歩を慎重に踏み出せばよいのです。" },
+  o:{
+    soshi:{ q:"無用の用 ―『荘子』人間世篇", a:"「失敗」だと思っているものも、別の視点からは意味を持つかもしれません。役に立たないとされた木が切られずに大きく育つように、評価の物差しを変えてごらんなさい。" },
+    epicurus:{ q:"記憶の快は選び取れる ―快楽計算", a:"後悔は過去の出来事そのものではなく、それを繰り返し思い返す今の心の動きです。過去の記憶の中から穏やかなものを選び取る練習をすることで、苦痛は和らげられます。" },
+    schopenhauer:{ q:"苦しみは生の本質 ―『意志と表象としての世界』", a:"失敗や苦しみのない人生を期待すること自体が誤りです。苦悩は例外ではなく生の常態だと知れば、一つの挫折に過大な意味を与えずに済みます。" },
+    heidegger:{ q:"被投性(Geworfenheit) ―『存在と時間』", a:"私たちは自ら選ばずにこの状況に「投げ込まれて」います。失敗もまたその被投性の一部。大切なのは過去をどう解釈し、そこからどう投企していくかです。" },
+    spinoza:{ q:"後悔は徳ではない ―『エチカ』", a:"後悔は自分を責め苦しめる悲しみの感情であり、それ自体は徳ではありません。過ちの原因を理性で正しく理解し、次の行動を改めることこそが本当の意味での徳です。" },
+  }},
+{ id:"indecision", label:"迷い・決断できない",
+  kw:["迷い","迷って","決断","決められない","どうしよう","選べない","悩む","迷う"],
+  feat:["soshi","heidegger"],
+  laozi:{ k:"豫兮若冬涉川、猶兮若畏四鄰。",
+    y:"豫たること冬に川を渉るが若く、猶たること四隣を畏るるが若し。",
+    src:"『道徳経』第15章",
+    m:"古の道を体得した者は、冬に川を渡るように慎重に、四方を警戒するように用心深かった。",
+    a:"迷いを悪いものと決めつける必要はありません。冬の川を渡るときの慎重さは、軽率な決断より道に適っています。ただし、迷いすぎて動けなくなるなら、それは違います。凍った川面をじっと見つめるのではなく、一歩ずつ足元を確かめながら進む。決断とは一度にすべてを見通すことではなく、今できる一歩を静かに踏み出すことなのです。" },
+  o:{
+    soshi:{ q:"胡蝶の夢 ―『荘子』斉物論篇", a:"胡蝶の夢で荘子は、自分が蝶の夢を見ているのか、蝶が自分の夢を見ているのか分からなくなりました。どちらが正しいかに固執しないことも、一つの知恵です。選択肢のどちらもが道の中にあるのかもしれません。" },
+    epicurus:{ q:"快楽計算 ―『メノイケウス宛の手紙』", a:"選択に迷う時は、目先の快だけでなく、その先にどんな苦痛や快が続くかを冷静に計算してみましょう。長期的な心の平静に資する方を選ぶのです。" },
+    schopenhauer:{ q:"意志は根本的に非合理 ―『意志と表象としての世界』", a:"決断できないのは、理性の下で盲目的な意志同士がせめぎ合っているからです。頭で結論を急ぐより、時間をおいて意志が一つの方向に落ち着くのを待つのも良いでしょう。" },
+    heidegger:{ q:"先駆的決意性 ―『存在と時間』", a:"決断とは正解を選ぶことではなく、自分の有限な生の可能性に向かって自分自身で引き受けることです。世間の正解を探すのをやめ、自分にとって本来的な選択とは何かに立ち返りなさい。" },
+    spinoza:{ q:"適切な観念を持つほど自由になる ―『エチカ』", a:"迷いは、状況について不十分な観念しか持たない状態から生じます。焦って決めるより、状況をできるだけ明晰に理解する努力そのものが、良い決断への近道です。" },
+  }},
+{ id:"happiness", label:"幸福とは・生きる意味",
+  kw:["幸福","幸せ","生きる意味","人生とは","何のために生きる","満たされ"],
+  feat:["epicurus","spinoza"],
+  laozi:{ k:"知足不辱、知止不殆、可以長久。",
+    y:"足るを知れば辱められず、止まるを知れば殆うからず、以て長久なるべし。",
+    src:"『道徳経』第44章",
+    m:"満足を知れば恥をかかず、止まることを知れば危うい目に遭わない。そうすれば長く久しく在ることができる。",
+    a:"幸福を、外から与えられる何かだと思っていませんか。名声、財産、成功、どれも際限がなく、追いかければ追いかけるほど遠ざかります。生きる意味を大きな目標の達成に求めるのではなく、道と共に在る今この瞬間の静けさの中に見出してごらんなさい。足るを知る心こそが、揺るぎない幸福の土台です。" },
+  o:{
+    soshi:{ q:"逍遥遊 ―『荘子』", a:"大鵬は九万里を飛び、蝉は木から木へ短く飛ぶ。どちらが優れているという話ではありません。自分の分に応じて自由に遊ぶ「逍遥」にこそ、生きる喜びがあります。" },
+    epicurus:{ q:"アタラクシア ―『メノイケウス宛の手紙』", a:"幸福とは激しい快楽の連続ではなく、苦痛や不安のない魂の平静(アタラクシア)です。友情、簡素な食事、自足した心。これらがあれば、人生の意味を問う必要すらなくなります。" },
+    schopenhauer:{ q:"幸福とは苦痛の一時的な不在にすぎない ―『意志と表象としての世界』", a:"積極的な幸福というものは存在せず、幸福とは欠乏(苦痛)が一時的に取り除かれた状態にすぎません。過大な期待を持たず、苦しみを減らすことに意味を見出す方が現実的です。" },
+    heidegger:{ q:"本来的な実存 ―『存在と時間』", a:"生きる意味を外側の答えに求めるのではなく、自分がこの世界に投げ出されているという事実そのものを引き受け、自分固有の可能性に向かって生きることの中に見出しなさい。" },
+    spinoza:{ q:"知的愛(Amor Dei intellectualis) ―『エチカ』", a:"最高の幸福とは、自然の必然性を理性によって理解し、そこから生まれる神=自然への知的な愛の中にあります。理解が深まるほど、心はより大きな喜びに満たされていきます。" },
+  }},
+{ id:"leadership", label:"リーダー・組織・人を導く",
+  kw:["リーダー","組織","部下","チーム","導く","マネジメント","上司","経営"],
+  feat:["soshi","heidegger"],
+  laozi:{ k:"太上、下知有之。……功成事遂、百姓皆謂我自然。",
+    y:"太上は下之有るを知るのみ。……功成り事遂げて、百姓皆我自ら然りと謂う。",
+    src:"『道徳経』第17章",
+    m:"最高の指導者とは、民がその存在をただ知っているだけの者だ。……事が成し遂げられても、民は皆「自分たちが自然にそうしたのだ」と言う。",
+    a:"本当に優れた指導者は、自分の力を誇示しません。命令で人を動かすのではなく、水が低きに流れるように、自然な流れを作り出して人々が自ら動くよう促すのです。手柄を独り占めせず、成果を「みんなでやり遂げた」と感じてもらえる場を整えること。それが無為の統治であり、最も長く信頼される導き方です。" },
+  o:{
+    soshi:{ q:"曳尾於塗中 ―『荘子』秋水篇", a:"荘子は宰相の位を断り、「泥の中に尾を引きずって自由に生きる亀でいたい」と言いました。権力の座に固執しないリーダーほど、実は人を惹きつけるものです。" },
+    epicurus:{ q:"自然な共同体の友情 ―エピクロスの園", a:"エピクロスの学園は身分に関わらず友として交わる共同体でした。組織を恐怖や競争ではなく、信頼と穏やかな対話で結びつけることが、長く続く集団を作ります。" },
+    schopenhauer:{ q:"意志の対立を調整する理性 ―『意志と表象としての世界』", a:"組織とは、それぞれの意志を持つ個人の集まりです。リーダーの役割は意志をねじ伏せることではなく、対立する意志の間に理性的な調整を働かせることにあります。" },
+    heidegger:{ q:"配慮的気遣い(Fürsorge) ―『存在と時間』", a:"他者への関わり方には、相手の代わりに背負ってしまう気遣いと、相手が自分自身の可能性へ向かう手助けをする気遣いがあります。良い指導者は後者を選び、部下が本来の自分の力を発揮できるよう場を整えます。" },
+    spinoza:{ q:"共通概念による協働 ―『エチカ』", a:"人間同士は理性に従うとき最も互いに有用な存在になります。恐怖ではなく共通の理解に基づいて人々を結びつけることが、組織の力を最大化する道です。" },
+  }},
+{ id:"infoOverload", label:"情報過多・SNS・比べてしまう",
+  kw:["SNS","情報","比べ","比較","スマホ","ネット","フォロワー","いいね","インスタ","x(旧twitter)"],
+  feat:["heidegger","epicurus"],
+  laozi:{ k:"五色令人目盲、五音令人耳聾、馳騁畋獵令人心發狂、難得之貨令人行妨。",
+    y:"五色は人の目をして盲ならしめ、五音は人の耳をして聾ならしめ、馳騁畋猟は人の心をして狂を発せしめ、得難きの貨は人の行いをして妨げしむ。",
+    src:"『道徳経』第12章",
+    m:"色彩の氾濫は人の目を見えなくし、音の氾濫は人の耳を聞こえなくする。激しい狩猟は人の心を狂わせ、手に入りにくい財貨は人の行いを乱す。",
+    a:"SNSの画面は、まさにこの五色五音の氾濫そのものです。次々流れてくる他人の成功や美しい生活を眺め続けるほど、あなた自身の目と心は本当に大切なものを見失っていきます。老子は聖人について「腹を満たして、目を満たさない」と言いました。見えるものを追いかけるのをやめ、自分の内側にある静けさを満たすことに意識を向けなさい。" },
+  o:{
+    soshi:{ q:"井の中の蛙、大海を知らず ―『荘子』秋水篇", a:"荘子は、それを蛙の限界としてだけ嘲笑いません。自分の器の中で十分に自由であることもまた一つの道です。他人の海の大きさと自分を比べる必要はないのです。" },
+    epicurus:{ q:"自然で必要な欲求だけを ―『主要教説』", a:"他人と比較して生まれる欲望のほとんどは、自然でも必要でもない空虚な欲望です。友との対話は、際限のないタイムラインより遥かに深い快をもたらします。" },
+    schopenhauer:{ q:"個体化の原理による幻想 ―『意志と表象としての世界』", a:"SNS上の他人の姿は、意志が生み出す表象の一断片にすぎません。その表面的な幸福の比較に囚われず、自分自身の内面の静けさに目を向けなさい。" },
+    heidegger:{ q:"世人(das Man)・空談(Gerede) ―『存在と時間』", a:"SNSの言葉の多くは、実感を欠いたまま流通する「空談」です。「みんな」が言っていることに流されるうちに、あなた自身の本来的な声はかき消されていきます。時には端末を置き、静けさの中で自分自身の声を聞き直しなさい。" },
+    spinoza:{ q:"受動感情としての嫉妬 ―『エチカ』", a:"他人と比較して生まれる羨望や嫉妬は、外的な原因に振り回される受動感情です。その仕組みを理性で理解すれば、比較というゲームそのものから自由になれます。" },
+  }},
+{ id:"solitude", label:"孤独・ひとりであること",
+  kw:["孤独","一人","ひとり","独り","寂しい","友達がいない","誰もいない"],
+  feat:["schopenhauer","spinoza"],
+  laozi:{ k:"眾人皆有餘、而我獨若遺。……我獨異於人、而貴食母。",
+    y:"衆人は皆余り有るも、我独り遺るるが若し。……我独り人に異なりて、母に食わるるを貴ぶ。",
+    src:"『道徳経』第20章",
+    m:"世の人々は皆満ち足りているようだが、私だけが置き去りにされたようだ。……私だけが人と違って、道という母に養われることを大切にしている。",
+    a:"老子自身、この章で自らの孤独を語っています。周りが賑やかに満ち足りて見えるとき、自分だけが取り残されたように感じることがあるでしょう。しかし老子はその孤独を嘆くのではなく、「人と違うこと」を道に近い証として受け止めました。群れの賑わいから離れているからこそ、道という大いなる根源に静かに養われることができるのです。孤独は欠落ではなく、時に本質へ近づくための静けさなのです。" },
+  o:{
+    soshi:{ q:"独与天地精神往来 ―『荘子』天下篇", a:"荘子は「ひとり天地の精神と往来する」在り方を理想としました。誰とも群れずとも、天地そのものを友とすることができるのです。" },
+    epicurus:{ q:"友情は最高の善の一つ ―『主要教説』", a:"エピクロスは孤独より友情を重んじましたが、その友情は数の多さではなく質にありました。一人でも心から語り合える友がいれば、それで十分に足りるのです。" },
+    schopenhauer:{ q:"孤独は優れた精神の運命 ―『余録と補遺』", a:"凡庸な人間ほど群れを求め、優れた精神ほど孤独に耐え、それを愛するようになります。自分自身と共にいられない者だけが、他人との時間で穴を埋めようとするのです。孤独は罰ではなく、自立した精神の証です。" },
+    heidegger:{ q:"本来的自己への孤立化(Vereinzelung) ―『存在と時間』", a:"不安の中で世人から引き離され、自分自身の存在にひとり向き合う瞬間があります。それは寂しさというより、あなたが本来のあなた自身に立ち戻る貴重な機会です。" },
+    spinoza:{ q:"自由な人間は孤独を恐れない ―『エチカ』", a:"理性に従って生きる自由な人間は、他者との交わりを喜びとしますが、それに依存しません。ひとりでいる時間もまた、自分の存在の力を確かめる能動的なひとときになり得ます。" },
+  }},
+{ id:"change", label:"変化・別れ・ままならなさ",
+  kw:["変化","別れ","ままならな","思い通りにならない","環境が変わ","引っ越し","転機"],
+  feat:["soshi","spinoza"],
+  laozi:{ k:"人之生也柔弱、其死也堅強。……強大處下、柔弱處上。",
+    y:"人の生まるるや柔弱、その死するや堅強なり。……強大は下に処り、柔弱は上に処る。",
+    src:"『道徳経』第76章",
+    m:"人は生まれるとき柔らかく弱い。死ぬときには堅く強張る。……強く大きいものは下位に置かれ、柔らかく弱いものが上位に置かれる。",
+    a:"ままならなさに抗おうとする心は、こわばった枯れ木のようなものです。しかし生きているものは常に柔らかく、変化に応じてしなやかに形を変えます。別れも環境の変化も、あなたの思い通りにならないのは当然のこと、それこそが「生きている」ということの証だからです。柔らかくあることは弱さではありません。柔らかいものこそ、最後まで折れずに生き残るのです。" },
+  o:{
+    soshi:{ q:"物化 ―『荘子』斉物論篇", a:"毛虫が蝶になるように、万物は絶えず姿を変え続けます(物化)。別れやままならなさも、固定された喪失ではなく、大きな変化の流れの一場面にすぎません。" },
+    epicurus:{ q:"予期せぬ出来事にも動じない賢者 ―エピクロス派倫理", a:"賢者は運命の変転を予め織り込んで生きています。変化そのものを恐れるのではなく、その時々に得られる自然な快を静かに受け取ることに集中しましょう。" },
+    schopenhauer:{ q:"意志の現れとしての変転 ―『意志と表象としての世界』", a:"この世界の変転は、根底にある盲目的な意志の絶え間ない現れです。個々の出来事に一喜一憂するより、変化そのものが世界の本質だと達観することが心を軽くします。" },
+    heidegger:{ q:"被投的企投(geworfener Entwurf) ―『存在と時間』", a:"私たちは望まぬ変化の中に投げ込まれながらも、そこから常に新しい可能性へ向けて自分を投げかけ直す存在です。ままならなさは終わりではなく、新しい企投の出発点です。" },
+    spinoza:{ q:"自由とは必然性の認識 ―『エチカ』", a:"起きたことを「そうでなければならなかった」自然の必然の連鎖として理性で理解すればするほど、それに対する受動的な悲しみは小さくなります。ままならなさを嘆くより、その因果を理解することが真の自由への道です。" },
+  }},
+];
+
+const FALLBACK = [
+  "もう少し、あなたの言葉で聞かせてもらえますか。何が今、あなたの心を占めていますか。",
+  "その悩み、もう少し具体的に教えてください。例えば「仕事」「人間関係」「将来」など、どんなことに関わっていますか。",
+  "言葉にならない悩みほど、道から遠ざかって見えるものです。焦らず、思いつくままに書いてみてください。",
+];
+
+const COMPARE_AXES = ["究極的実在","欲望と幸福","死生観","知と言語","政治観","中心概念","老子との最大の違い"];
+const COMPARE = {
+  laozi:        ["道(タオ)、名づけ得ぬ根源","知足による静かな充足","生死は道の中の自然な変化","道は言葉を超える(道可道、非常道)","無為而治、小国寡民","無為自然","(基準)"],
+  soshi:        ["道、万物斉同","逍遥自在の遊び心としての幸福","物化、生死は気の巡り","言葉より寓話・比喩を重視","権力からの離脱、曳尾於塗中","斉物論・逍遥遊","老子の道を寓話で文学的に展開"],
+  epicurus:     ["原子と空虚(唯物論)","動的快でなく静的快=アタラクシア","死は経験されないので恐れる対象でない","感覚を知の出発点とする経験論","政治参加を避け隠れて生きる","アタラクシア","無為と類似するが根拠は原子論的唯物論"],
+  schopenhauer: ["盲目的な生への意志","欲望は苦痛、芸術的観照が一時の救い","個体消滅は意志の否定・救済に近い","概念より直観・音楽を最高の認識とする","厭世的、政治への期待は薄い","意志と表象","無為に近いが根底に強い厭世主義がある"],
+  heidegger:    ["存在(Sein)そのもの","本来性の追求(快楽ではない)","死への先駆が本来性を開く","言語は存在の家","集立(Gestell)批判、故郷の回復","放下(Gelassenheit)","放下は無為と響くが実存分析という方法が異なる"],
+  spinoza:      ["神即自然(唯一実体)","理性による能動感情、知的愛","永遠の相の下での理解、個の消滅は軽い","理性的認識(第三種認識)が最高知","民主政と言論の自由を擁護","コナトゥス","理性主義が徹底しており、老子の直観性と対照的"],
+};
+
+/* ============ タブ切替 ============ */
+document.querySelectorAll("nav button").forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".pane").forEach(p=>p.classList.remove("on"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.pane).classList.add("on");
+  };
+});
+
+/* ============ 相談タブ ============ */
+const chipsEl = document.getElementById("chips");
+THEMES.forEach(th=>{
+  const b = document.createElement("button");
+  b.className = "chip";
+  b.textContent = th.label;
+  b.onclick = ()=> ask(th.label, th.id);
+  chipsEl.appendChild(b);
+});
+
+const logEl = document.getElementById("log");
+const moreRowEl = document.getElementById("moreRow");
+const qInput = document.getElementById("q");
+
+function detectTheme(text){
+  let best=null, bestScore=0;
+  THEMES.forEach(th=>{
+    let score=0;
+    th.kw.forEach(k=>{ if(text.includes(k)) score++; });
+    if(score>bestScore){ bestScore=score; best=th; }
+  });
+  return bestScore>0 ? best : null;
+}
+
+function clearEmptyHint(){
+  const hint = logEl.querySelector(".empty-hint");
+  if(hint) hint.remove();
+}
+
+function appendUserMsg(text){
+  clearEmptyHint();
+  const div = document.createElement("div");
+  div.className = "msg user";
+  div.innerHTML = '<span class="bubble"></span>';
+  div.querySelector(".bubble").textContent = text;
+  logEl.appendChild(div);
+}
+
+function makeCard(id, whoLabel, quote, yomi, src, modern, answerText){
+  const p = PHILOSOPHERS[id];
+  const card = document.createElement("div");
+  card.className = "card";
+  card.style.setProperty("--card-color", p.c);
+  let html = '<div class="who"></div>';
+  if(quote) html += '<div class="quote"></div>';
+  if(yomi) html += '<div class="yomi"></div>';
+  if(src) html += '<div class="src"></div>';
+  if(modern) html += '<div class="modern"></div>';
+  html += '<div class="answer"></div>';
+  card.innerHTML = html;
+  card.querySelector(".who").textContent = whoLabel;
+  if(quote) card.querySelector(".quote").textContent = quote;
+  if(yomi) card.querySelector(".yomi").textContent = yomi;
+  if(src) card.querySelector(".src").textContent = src;
+  if(modern) card.querySelector(".modern").textContent = modern;
+  card.querySelector(".answer").textContent = answerText;
+  return card;
+}
+
+function respond(theme){
+  moreRowEl.innerHTML = "";
+  setTimeout(()=>{
+    const lz = theme.laozi;
+    logEl.appendChild(makeCard("laozi", "老子", lz.k, lz.y, lz.src, "[現代語訳] "+lz.m, lz.a));
+    logEl.scrollTop = logEl.scrollHeight;
+  }, 150);
+
+  const delays = [800, 1450];
+  theme.feat.forEach((pid, idx)=>{
+    setTimeout(()=>{
+      const o = theme.o[pid];
+      logEl.appendChild(makeCard(pid, PHILOSOPHERS[pid].name, null, null, o.q, null, o.a));
+      logEl.scrollTop = logEl.scrollHeight;
+    }, delays[idx]);
+  });
+
+  setTimeout(()=>{
+    const remaining = OTHERS.filter(id=> !theme.feat.includes(id));
+    remaining.forEach(pid=>{
+      const btn = document.createElement("button");
+      btn.className = "askmore";
+      btn.style.setProperty("--btn-color", PHILOSOPHERS[pid].c);
+      btn.textContent = PHILOSOPHERS[pid].name + "にも聞く";
+      btn.onclick = ()=>{
+        const o = theme.o[pid];
+        logEl.appendChild(makeCard(pid, PHILOSOPHERS[pid].name, null, null, o.q, null, o.a));
+        logEl.scrollTop = logEl.scrollHeight;
+        btn.remove();
+      };
+      moreRowEl.appendChild(btn);
+    });
+  }, 1600);
+}
+
+function respondFallback(){
+  setTimeout(()=>{
+    const text = FALLBACK[Math.floor(Math.random()*FALLBACK.length)];
+    logEl.appendChild(makeCard("laozi", "老子", null, null, null, null, text));
+    logEl.scrollTop = logEl.scrollHeight;
+  }, 150);
+}
+
+function ask(text, forcedThemeId){
+  text = (text||"").trim();
+  if(!text) return;
+  appendUserMsg(text);
+  qInput.value = "";
+  moreRowEl.innerHTML = "";
+  const theme = forcedThemeId ? THEMES.find(t=>t.id===forcedThemeId) : detectTheme(text);
+  if(theme){ respond(theme); } else { respondFallback(); }
+}
+
+document.getElementById("ask").onclick = ()=> ask(qInput.value);
+qInput.addEventListener("keydown", e=>{ if(e.key==="Enter") ask(qInput.value); });
+
+/* ============ 哲学者たちタブ ============ */
+const libEl = document.getElementById("library");
+PROFILES.forEach(pr=>{
+  const p = PHILOSOPHERS[pr.id];
+  const div = document.createElement("div");
+  div.className = "profile";
+  div.style.setProperty("--p-color", p.c);
+  div.innerHTML =
+    '<h3></h3><div class="era"></div><dl>'+
+    '<dt>主著</dt><dd class="d-work"></dd>'+
+    '<dt>思想</dt><dd class="d-thought"></dd>'+
+    '<dt>老子との関係</dt><dd class="d-rel"></dd>'+
+    '</dl>';
+  div.querySelector("h3").textContent = p.name;
+  div.querySelector(".era").textContent = p.era;
+  div.querySelector(".d-work").textContent = pr.work;
+  div.querySelector(".d-thought").textContent = pr.thought;
+  div.querySelector(".d-rel").textContent = pr.rel;
+  libEl.appendChild(div);
+});
+
+/* ============ 概念事典タブ ============ */
+const glossEl = document.getElementById("glossary");
+TERMS.forEach(term=>{
+  const p = PHILOSOPHERS[term.p];
+  const div = document.createElement("div");
+  div.className = "term";
+  div.innerHTML = '<span class="t"></span><span class="p"></span><span class="d"></span>';
+  div.querySelector(".t").textContent = term.t;
+  const pEl = div.querySelector(".p");
+  pEl.textContent = p.name;
+  pEl.style.setProperty("--t-color", p.c);
+  div.querySelector(".d").textContent = term.d;
+  glossEl.appendChild(div);
+});
+
+/* ============ 比較表タブ ============ */
+const cmpEl = document.getElementById("compare");
+(function(){
+  const wrap = document.createElement("div");
+  wrap.className = "tablewrap";
+  const table = document.createElement("table");
+  table.className = "compare";
+  const order = ["laozi","soshi","epicurus","schopenhauer","heidegger","spinoza"];
+  let thead = "<thead><tr><th class='axis'>軸</th>";
+  order.forEach(id=>{ thead += "<th>"+PHILOSOPHERS[id].name+"</th>"; });
+  thead += "</tr></thead>";
+  let tbody = "<tbody>";
+  COMPARE_AXES.forEach((axis, i)=>{
+    tbody += "<tr><td class='axis'>"+axis+"</td>";
+    order.forEach(id=>{ tbody += "<td>"+COMPARE[id][i]+"</td>"; });
+    tbody += "</tr>";
+  });
+  tbody += "</tbody>";
+  table.innerHTML = thead + tbody;
+  wrap.appendChild(table);
+  cmpEl.appendChild(wrap);
+})();
+</script>
+</body>
+</html>
